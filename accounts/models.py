@@ -45,6 +45,10 @@ class User(AbstractUser):
         super().save(*args, **kwargs)
 
     @classmethod
+    def email_exists(cls, email):
+        return cls.objects.filter(email=email, is_active= True).exists()
+
+    @classmethod
     def generate_username_from_email(cls, prefix: str) -> str:
         base_username = slugify(prefix.split('@')[0])
         latest_user = cls.objects.filter(username__startswith=base_username).order_by('-id').first()

@@ -3,6 +3,8 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from .models import UserOTPCodes
+from django.shortcuts import get_object_or_404
+
 User = get_user_model()
 
 
@@ -39,4 +41,30 @@ class ActivationSerializer(serializers.Serializer):
         user = data.get('user')
         if not UserOTPCodes.is_valid(user, code):
             raise serializers.ValidationError({'code': 'OTP code is invalid'})
+        return data
+
+
+class PasswordResetSerializer(serializers.Serializer):
+    code = serializers.CharField(max_length=6)
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+    password_confirm = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        code = data.get('code')
+        email = data.get('email')
+        password = data.get('password')
+        password_confirm = data.get('password_confirm')
+
+        if not User.email_exists(email):
+            raise serializers.ValidationError({'email': 'User does not exist'})
+
+        user = get_object_or_404(User, email=email)
+
+        if not UserOTPCodes.is_valid(user.pk, code):
+            raise serializers.ValidationError({'code': 'OTP code is invalid'})
+
+        if password != password_confirm:
+            return serializers.ValidationError({'password': 'Passwords do not match'})
+
         return data

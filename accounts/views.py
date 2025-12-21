@@ -2,7 +2,7 @@ from accounts.services.mailers.user_mailer import UserMailer
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from .serializers import SignupSerializer, ActivationSerializer
+from .serializers import SignupSerializer, ActivationSerializer, PasswordResetSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import UserOTPCodes
 from accounts.services.mailers import UserMailer
@@ -51,5 +51,32 @@ class ActivateView(APIView):
         UserOTPCodes.use_otp(user_id, code)
         user = get_object_or_404(User, pk=user_id)
         user.is_active = True
+        user.save()
+        return Response({'result': 'success'}, status=status.HTTP_200_OK)
+
+
+class ResetPasswordView(APIView):
+    authentication_classes = []
+    permission_classes = []
+
+
+    def get(self, request):
+        email = request.data.get('email')
+        if not User.email_exists(email):
+            return Response({'result': 'error'}, status=status.HTTP_404_NOT_FOUND)
+
+        UserMailer.passwordChangeRequest(user)
+        return Response({'result': 'success'}, status=status.HTTP_200_OK)
+
+    def post(self, request):
+        serializer = PasswordResetSerializer(data=request.data)
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        password = serializer.validated_data.get('password')
+        email = serializer.validated_data.get('email')
+
+        user = get_object_or_404(User, email=email)
+        user.set_password(password)
         user.save()
         return Response({'result': 'success'}, status=status.HTTP_200_OK)

@@ -1,0 +1,32 @@
+# Design Generation Plan - Gig App
+
+I will generate 8 mobile app screen designs corresponding to the "Gig" User Journey Storyboard. The design aesthetic will be "Dark Mode," "Minimalist," and "Nerdy/Cool High-Tech" (Neon accents, dark grays, clean typography).
+
+## Screen 1: The Entry
+**Prompt:** `Mobile app splash screen for 'Gig'. Dark mode, minimalist. Text in center 'Verifying your number...' with a sleek, futuristic spinner. Below it, a success state showing 'Welcome'. Aesthetic: Apple-esque dark mode, clean sans-serif font, subtle purple gradient background.`
+
+## Screen 2: Contacts Sync
+**Prompt:** `Mobile app screen, dark mode. Title 'Gig works best with friends'. Central illustration of a social network graph (connecting dots/nodes) in neon purple/blue. Large button 'Sync Contacts' at bottom. Subtext 'See where your friends are going'. detailed UI.`
+
+## Screen 3: Create Event Modal
+**Prompt:** `Mobile app screen, dark mode. 'Create Event' modal form. Fields: 'Title' (What's the move?), 'Location' (with map pin icon and 'Verified' green badge), 'Date/Time', 'Vibe' selector (row of emojis: House, Beer, Guitar), 'Entry Fee' toggle ($20). sleek styling, translucent glassmorphism background.`
+
+## Screen 4: Map Feed (Main)
+**Prompt:** `Mobile app main screen. Dark map interface (like midnight mode). Glowing purple map pins representing events. Small distinct user avatars (faces) floating near the pins. Bottom navigation bar with icons `Explore`, `Create`, `Tickets`, `Profile`. High fidelity UI design.`
+
+## Screen 5: Event Details & Payment
+**Prompt:** `Mobile app bottom sheet partially covering a map background. Title 'House Party at Alex's'. Price tag '$20.00'. Payment section showing logos for 'Apple Pay', 'Keypad', 'Card'. Large 'Purchase Ticket' button. Dark theme with neon accents.`
+
+## Screen 6: Dynamic Ticket
+**Prompt:** `Mobile app screen showing a digital event ticket. Large central QR code that looks dynamic/shimmering (to imply animation). Text below 'Screenshotting will not work'. Background has a security pattern/watermark. Dark mode.`
+
+## Screen 7: Bouncer Mode
+**Prompt:** `Mobile app screen, Bouncer/Organizer view. Camera viewfinder UI scanning a QR code on another phone. Overlay text 'Valid Ticket - Sam'. Green success border or indicator. Dark UI.`
+
+## Screen 8: Organizer Dashboard
+**Prompt:** `Mobile app dashboard screen for event organizer. Big text 'Total Sales: $1000' and 'Your Cut: $900'. Simple line graph showing sales trend. Button 'Withdraw Funds'. List of recent transactions below. Dark mode, clean data visualization.`
+
+## Execution Steps
+1.  Generate all 8 images.
+2.  Save them to `C:\Users\HP\.gemini\antigravity\scratch\gig\designs\`.
+3.  Create a summary markdown file `designs.md` embedding the images for review.

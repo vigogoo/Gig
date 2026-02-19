@@ -26,6 +26,18 @@ export const Colors = {
     tabIconSelected: tintColorDark,
   },
 };
+export const theme = {
+  bgTop: "#2A0C0C",
+  bgBottom: "#0B0708",
+  card: "rgba(255,255,255,0.08)",
+  card2: "rgba(255,255,255,0.06)",
+  border: "rgba(255,255,255,0.10)",
+  text: "#F8FAFC",
+  muted: "rgba(248,250,252,0.65)",
+  accent: "#FF4D5A",
+  accentSoft: "rgba(255,77,90,0.18)",
+};
+
 
 export const Fonts = Platform.select({
   ios: {

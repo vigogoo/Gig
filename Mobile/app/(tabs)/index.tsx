@@ -1,98 +1,103 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { useMemo, useState } from "react";
+import { View, Text, StyleSheet, FlatList, Pressable, Image } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { StatusBar } from "expo-status-bar";
+import { Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+import { theme } from "@/constants/theme";
+import { events } from "@/constants/events";
+import { SearchBar } from "@/components/events/SearchBar";
+import { CategoryChips } from "@/components/events/CategoryChips";
+import { EventCard } from "@/components/events/EventCard";
 
 export default function HomeScreen() {
-  return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
-        </Link>
+  const [q, setQ] = useState("");
+  const [cat, setCat] = useState("My feed");
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+  const data = useMemo(() => {
+    const needle = q.trim().toLowerCase();
+    if (!needle) return events;
+    return events.filter((e) => e.title.toLowerCase().includes(needle));
+  }, [q]);
+
+  return (
+    <LinearGradient colors={[theme.bgTop, theme.bgBottom]} style={styles.page}>
+      <StatusBar style="light" />
+      <FlatList
+        data={data}
+        keyExtractor={(i) => i.id}
+        contentContainerStyle={styles.content}
+        ListHeaderComponent={
+          <View style={{ gap: 14 }}>
+            <View style={styles.header}>
+              <Pressable style={styles.iconBtn}>
+                <Ionicons name="menu" size={18} color={theme.text} />
+              </Pressable>
+
+              <Pressable style={styles.location}>
+                <Ionicons name="location" size={16} color={theme.accent} />
+                <Text style={styles.locationText}>Jakarta, Ina</Text>
+                <Ionicons name="chevron-down" size={16} color={theme.muted} />
+              </Pressable>
+
+              <Image
+                source={{ uri: "https://i.pravatar.cc/100?img=12" }}
+                style={styles.avatar}
+              />
+            </View>
+
+            <SearchBar value={q} onChangeText={setQ} />
+
+            <View style={styles.sectionRow}>
+              <Text style={styles.sectionTitle}>Upcoming events</Text>
+              <Text style={styles.sectionLink}>See All</Text>
+            </View>
+
+            <CategoryChips active={cat} onChange={setCat} />
+          </View>
+        }
+        renderItem={({ item }) => (
+          <EventCard item={item} onPress={() => router.push(`/event/${item.id}`)} />
+        )}
+      />
+    </LinearGradient>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  page: { flex: 1 },
+  content: { padding: 16, paddingBottom: 24 },
+  header: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    marginBottom: 2,
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
+  iconBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 14,
+    backgroundColor: theme.card2,
+    borderWidth: 1,
+    borderColor: theme.border,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  location: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 12,
+    height: 40,
+    borderRadius: 14,
+    backgroundColor: theme.card2,
+    borderWidth: 1,
+    borderColor: theme.border,
   },
+  locationText: { color: theme.text, fontWeight: "800", fontSize: 13 },
+  avatar: { width: 40, height: 40, borderRadius: 14, borderWidth: 1, borderColor: theme.border },
+  sectionRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", marginTop: 6 },
+  sectionTitle: { color: theme.text, fontWeight: "900", fontSize: 16 },
+  sectionLink: { color: theme.muted, fontWeight: "800", fontSize: 12 },
 });

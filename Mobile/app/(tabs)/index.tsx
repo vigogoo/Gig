@@ -5,11 +5,14 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-import { theme } from "@/constants/theme";
+
 import { events } from "@/constants/events";
 import { SearchBar } from "@/components/events/SearchBar";
 import { CategoryChips } from "@/components/events/CategoryChips";
 import { EventCard } from "@/components/events/EventCard";
+import { useVibe } from "@/context/VibeProvider";
+const { theme } = useVibe();
+
 
 export default function HomeScreen() {
   const [q, setQ] = useState("");
@@ -22,7 +25,8 @@ export default function HomeScreen() {
   }, [q]);
 
   return (
-    <LinearGradient colors={[theme.bgTop, theme.bgBottom]} style={styles.page}>
+    <LinearGradient colors={theme.bg} style={styles.page}>
+
       <StatusBar style="light" />
       <FlatList
         data={data}
@@ -78,7 +82,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 14,
-    backgroundColor: theme.card2,
+    backgroundColor: theme.surface2,
     borderWidth: 1,
     borderColor: theme.border,
     alignItems: "center",
@@ -91,7 +95,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 40,
     borderRadius: 14,
-    backgroundColor: theme.card2,
+    backgroundColor: theme.surface2,
     borderWidth: 1,
     borderColor: theme.border,
   },

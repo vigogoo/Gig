@@ -6,8 +6,10 @@ import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 import QRCode from "react-native-qrcode-svg";
 
-import { theme } from "@/constants/theme";
+
 import { events } from "@/constants/events";
+import { useVibe } from "@/context/VibeProvider";
+const { theme } = useVibe();
 
 export default function TicketScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,7 +22,8 @@ export default function TicketScreen() {
   }, [item]);
 
   return (
-    <LinearGradient colors={[theme.bgTop, theme.bgBottom]} style={styles.page}>
+    <LinearGradient colors={theme.bg} style={styles.page}>
+
       <StatusBar style="light" />
 
       <View style={styles.topBar}>
@@ -113,7 +116,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 14,
-    backgroundColor: theme.card2,
+    backgroundColor: theme.surface2,
     borderWidth: 1,
     borderColor: theme.border,
     alignItems: "center",

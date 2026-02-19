@@ -1,5 +1,5 @@
 import { View, Text, Pressable, StyleSheet, ScrollView } from "react-native";
-import { theme } from "@/constants/theme";
+import { useVibe } from "@/context/VibeProvider";
 
 const chips = ["My feed", "Food", "Concerts"];
 
@@ -10,6 +10,8 @@ export function CategoryChips({
   active: string;
   onChange: (v: string) => void;
 }) {
+  const { theme } = useVibe();
+
   return (
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       <View style={styles.row}>
@@ -21,10 +23,14 @@ export function CategoryChips({
               onPress={() => onChange(c)}
               style={[
                 styles.chip,
-                isActive && { backgroundColor: theme.accentSoft, borderColor: theme.accent },
+                { borderColor: theme.border, backgroundColor: theme.surface2 },
+                isActive && {
+                  backgroundColor: theme.accentSoft,
+                  borderColor: theme.accent,
+                },
               ]}
             >
-              <Text style={[styles.text, isActive && { color: theme.text }]}>
+              <Text style={[styles.text, { color: isActive ? theme.text : theme.muted }]}>
                 {c}
               </Text>
             </Pressable>
@@ -42,9 +48,7 @@ const styles = StyleSheet.create({
     height: 34,
     borderRadius: 999,
     justifyContent: "center",
-    backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.08)",
   },
-  text: { color: theme.muted, fontSize: 13, fontWeight: "600" },
+  text: { fontSize: 13, fontWeight: "600" },
 });

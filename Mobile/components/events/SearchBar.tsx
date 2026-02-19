@@ -1,6 +1,8 @@
 import { View, TextInput, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { theme } from "@/constants/theme";
+import { useVibe } from "@/context/VibeProvider";
+const { theme } = useVibe();
+
 
 export function SearchBar({
   value,
@@ -33,7 +35,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 14,
     height: 44,
     borderRadius: 14,
-    backgroundColor: theme.card2,
+    backgroundColor: theme.surface2,
     borderWidth: 1,
     borderColor: theme.border,
   },

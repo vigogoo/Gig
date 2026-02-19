@@ -1,7 +1,9 @@
 import { View, Text, ImageBackground, StyleSheet, Pressable } from "react-native";
-import { theme } from "@/constants/theme";
+
 import type { EventItem } from "@/constants/events";
 
+import { useVibe } from "@/context/VibeProvider";
+const { theme } = useVibe();
 export function EventCard({
   item,
   onPress,
@@ -43,7 +45,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderWidth: 1,
     borderColor: theme.border,
-    backgroundColor: theme.card2,
+    backgroundColor: theme.surface2,
     marginBottom: 12,
   },
   img: { height: 190, padding: 14, justifyContent: "space-between" },

@@ -4,94 +4,169 @@ import { StatusBar } from "expo-status-bar";
 import { Ionicons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { theme } from "@/constants/theme";
+import { useVibe } from "@/context/VibeProvider";
 import { events } from "@/constants/events";
 
 export default function EventDetails() {
+  const { theme } = useVibe();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const item = events.find((e) => e.id === id) ?? events[0];
+
+  const item = events?.find((e: any) => e.id === id) ?? events?.[0];
+
+  if (!item) {
+    return (
+      <LinearGradient colors={theme.bg} style={{ flex: 1, padding: 16, paddingTop: 60 }}>
+        <StatusBar style={theme.mode === "clean" ? "dark" : "light"} />
+        <Text style={{ color: theme.text, fontWeight: "900", fontSize: 18 }}>No events found</Text>
+      </LinearGradient>
+    );
+  }
 
   return (
-    <View style={{ flex: 1, backgroundColor: theme.bgBottom }}>
-      <StatusBar style="light" />
+    <View style={{ flex: 1, backgroundColor: theme.mode === "clean" ? "#fff" : "#000" }}>
+      <StatusBar style={theme.mode === "clean" ? "dark" : "light"} />
 
+      {/* HERO */}
       <ImageBackground source={{ uri: item.image }} style={styles.hero}>
         <LinearGradient
-          colors={["rgba(0,0,0,0.15)", "rgba(0,0,0,0.85)"]}
+          colors={[
+            "rgba(0,0,0,0.10)",
+            theme.mode === "clean" ? "rgba(0,0,0,0.45)" : "rgba(0,0,0,0.82)",
+          ]}
           style={StyleSheet.absoluteFill}
         />
+
         <View style={styles.heroTop}>
-          <Pressable onPress={() => router.back()} style={styles.heroBtn}>
+          <Pressable
+            onPress={() => router.back()}
+            style={[
+              styles.heroBtn,
+              { borderColor: theme.border, backgroundColor: "rgba(0,0,0,0.28)" },
+            ]}
+          >
             <Ionicons name="chevron-back" size={18} color={theme.text} />
           </Pressable>
+
           <View style={{ flexDirection: "row", gap: 10 }}>
-            <Pressable style={styles.heroBtn}>
+            <Pressable
+              style={[
+                styles.heroBtn,
+                { borderColor: theme.border, backgroundColor: "rgba(0,0,0,0.28)" },
+              ]}
+            >
               <Ionicons name="heart-outline" size={18} color={theme.text} />
             </Pressable>
-            <Pressable style={styles.heroBtn}>
+
+            <Pressable
+              style={[
+                styles.heroBtn,
+                { borderColor: theme.border, backgroundColor: "rgba(0,0,0,0.28)" },
+              ]}
+            >
               <Ionicons name="share-outline" size={18} color={theme.text} />
             </Pressable>
           </View>
         </View>
 
         <View style={styles.heroBottom}>
-          <Text style={styles.heroTitle}>{item.title}</Text>
-          <Text style={styles.heroSub}>
+          <Text style={[styles.heroTitle, { color: theme.text }]}>{item.title}</Text>
+          <Text style={[styles.heroSub, { color: theme.muted }]}>
             {item.city}, {item.country}
           </Text>
 
-          <View style={styles.pricePill}>
-            <Text style={styles.priceText}>
+          <View
+            style={[
+              styles.pricePill,
+              { borderColor: theme.border, backgroundColor: "rgba(255,255,255,0.12)" },
+            ]}
+          >
+            <Text style={[styles.priceText, { color: theme.text }]}>
               {item.currency}
-              {item.price.toFixed(2)}
+              {Number(item.price).toFixed(2)}
             </Text>
           </View>
         </View>
       </ImageBackground>
 
-      <ScrollView contentContainerStyle={styles.body}>
-        <View style={styles.metaRow}>
-          <View style={styles.metaItem}>
-            <Ionicons name="calendar-outline" size={16} color={theme.muted} />
-            <Text style={styles.metaText}>{item.dateLabel}</Text>
-          </View>
-          <View style={styles.metaItem}>
-            <Ionicons name="time-outline" size={16} color={theme.muted} />
-            <Text style={styles.metaText}>{item.timeLabel}</Text>
-          </View>
-        </View>
+      {/* BODY */}
+      <LinearGradient colors={theme.bg} style={{ flex: 1 }}>
+        <ScrollView contentContainerStyle={styles.body}>
+          <View style={styles.metaRow}>
+            <View
+              style={[
+                styles.metaItem,
+                { backgroundColor: theme.surface2, borderColor: theme.border },
+              ]}
+            >
+              <Ionicons name="calendar-outline" size={16} color={theme.muted} />
+              <Text style={[styles.metaText, { color: theme.text }]}>{item.dateLabel}</Text>
+            </View>
 
-        <Text style={styles.section}>About this event</Text>
-        <Text style={styles.paragraph}>{item.description}</Text>
-
-        <View style={styles.divider} />
-
-        <View style={styles.descRow}>
-          <Text style={styles.section}>Description</Text>
-          <View style={styles.rating}>
-            <Ionicons name="star" size={14} color={theme.accent} />
-            <Text style={styles.ratingText}>{item.rating.toFixed(1)}</Text>
+            <View
+              style={[
+                styles.metaItem,
+                { backgroundColor: theme.surface2, borderColor: theme.border },
+              ]}
+            >
+              <Ionicons name="time-outline" size={16} color={theme.muted} />
+              <Text style={[styles.metaText, { color: theme.text }]}>{item.timeLabel}</Text>
+            </View>
           </View>
-        </View>
 
-        <View style={styles.bullets}>
-          <View style={styles.bulletLine}>
-            <Ionicons name="checkmark-circle-outline" size={16} color={theme.muted} />
-            <Text style={styles.bulletText}>{item.title} singing is {item.dateLabel} at {item.timeLabel}</Text>
-          </View>
-          <View style={styles.bulletLine}>
-            <Ionicons name="checkmark-circle-outline" size={16} color={theme.muted} />
-            <Text style={styles.bulletText}>Meet and greet with other fans after show</Text>
-          </View>
-        </View>
+          <Text style={[styles.section, { color: theme.text }]}>About this event</Text>
+          <Text style={[styles.paragraph, { color: theme.muted }]}>{item.description}</Text>
 
-        <Pressable
-          onPress={() => router.push(`/ticket/${item.id}`)}
-          style={styles.cta}
-        >
-          <Text style={styles.ctaText}>Get a Ticket</Text>
-        </Pressable>
-      </ScrollView>
+          <View style={[styles.divider, { backgroundColor: theme.border }]} />
+
+          <View style={styles.descRow}>
+            <Text style={[styles.section, { color: theme.text }]}>Description</Text>
+
+            <View
+              style={[
+                styles.rating,
+                { borderColor: theme.border, backgroundColor: theme.surface2 },
+              ]}
+            >
+              <Ionicons name="star" size={14} color={theme.accent} />
+              <Text style={[styles.ratingText, { color: theme.text }]}>
+                {Number(item.rating ?? 4.8).toFixed(1)}
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.bullets}>
+            <View style={styles.bulletLine}>
+              <Ionicons name="checkmark-circle-outline" size={16} color={theme.muted} />
+              <Text style={[styles.bulletText, { color: theme.muted }]}>
+                Doors open 1 hour before the event.
+              </Text>
+            </View>
+            <View style={styles.bulletLine}>
+              <Ionicons name="checkmark-circle-outline" size={16} color={theme.muted} />
+              <Text style={[styles.bulletText, { color: theme.muted }]}>
+                Bring a valid ID for entry verification.
+              </Text>
+            </View>
+          </View>
+
+          <Pressable
+            onPress={() => router.push(`/ticket/${item.id}`)}
+            style={[
+              styles.cta,
+              { backgroundColor: theme.accent, borderColor: theme.border },
+            ]}
+          >
+            <Text
+              style={[
+                styles.ctaText,
+                { color: theme.mode === "clean" ? "#fff" : "#0B0708" },
+              ]}
+            >
+              Get a Ticket
+            </Text>
+          </Pressable>
+        </ScrollView>
+      </LinearGradient>
     </View>
   );
 }
@@ -109,29 +184,26 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 14,
-    backgroundColor: "rgba(0,0,0,0.35)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.15)",
     alignItems: "center",
     justifyContent: "center",
   },
   heroBottom: { padding: 16, gap: 6 },
-  heroTitle: { color: theme.text, fontWeight: "900", fontSize: 22 },
-  heroSub: { color: theme.muted, fontWeight: "800" },
+  heroTitle: { fontWeight: "900", fontSize: 22 },
+  heroSub: { fontWeight: "800" },
+
   pricePill: {
     alignSelf: "flex-start",
     marginTop: 8,
     paddingHorizontal: 12,
     height: 32,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.12)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.18)",
     justifyContent: "center",
   },
-  priceText: { color: theme.text, fontWeight: "900", fontSize: 12 },
+  priceText: { fontWeight: "900", fontSize: 12 },
 
-  body: { padding: 16, gap: 12, paddingBottom: 22 },
+  body: { padding: 16, gap: 12, paddingBottom: 110 },
   metaRow: { flexDirection: "row", gap: 12 },
   metaItem: {
     flexDirection: "row",
@@ -140,16 +212,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     height: 40,
     borderRadius: 14,
-    backgroundColor: theme.card2,
     borderWidth: 1,
-    borderColor: theme.border,
   },
-  metaText: { color: theme.text, fontWeight: "800", fontSize: 12 },
+  metaText: { fontWeight: "800", fontSize: 12 },
 
-  section: { color: theme.text, fontWeight: "900", fontSize: 16 },
-  paragraph: { color: theme.muted, fontWeight: "700", lineHeight: 20 },
+  section: { fontWeight: "900", fontSize: 16 },
+  paragraph: { fontWeight: "700", lineHeight: 20 },
 
-  divider: { height: 1, backgroundColor: "rgba(255,255,255,0.10)", marginVertical: 6 },
+  divider: { height: 1, marginVertical: 6 },
 
   descRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   rating: {
@@ -159,23 +229,21 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     height: 30,
     borderRadius: 999,
-    backgroundColor: "rgba(255,255,255,0.06)",
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.10)",
   },
-  ratingText: { color: theme.text, fontWeight: "900", fontSize: 12 },
+  ratingText: { fontWeight: "900", fontSize: 12 },
 
   bullets: { gap: 10 },
   bulletLine: { flexDirection: "row", gap: 10, alignItems: "flex-start" },
-  bulletText: { flex: 1, color: theme.muted, fontWeight: "700", lineHeight: 20 },
+  bulletText: { flex: 1, fontWeight: "700", lineHeight: 20 },
 
   cta: {
     marginTop: 8,
     height: 52,
     borderRadius: 18,
-    backgroundColor: theme.accent,
     alignItems: "center",
     justifyContent: "center",
+    borderWidth: 1,
   },
-  ctaText: { color: "#0B0708", fontWeight: "900", fontSize: 15 },
+  ctaText: { fontWeight: "900", fontSize: 15 },
 });

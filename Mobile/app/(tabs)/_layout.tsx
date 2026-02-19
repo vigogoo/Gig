@@ -1,35 +1,57 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import { Tabs } from "expo-router";
+import { BlurView } from "expo-blur";
+import { Ionicons } from "@expo/vector-icons";
+import { StyleSheet } from "react-native";
+import { VibeProvider, useVibe } from "@/context/VibeProvider";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+function TabsInner() {
+  const { theme } = useVibe();
 
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
         headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
-        }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
+        tabBarShowLabel: false,
+        tabBarStyle: [styles.tab, { borderColor: theme.border }],
+        tabBarBackground: () => (
+          <BlurView
+            intensity={28}
+            tint={theme.mode === "clean" ? "light" : "dark"}
+            style={[StyleSheet.absoluteFill, { backgroundColor: theme.surface2 }]}
+          />
+        ),
+        tabBarActiveTintColor: theme.accent,
+        tabBarInactiveTintColor: theme.muted,
+      }}
+    >
+      <Tabs.Screen name="pulse" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="pulse" size={size} color={color} /> }} />
+      <Tabs.Screen name="map" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="map-outline" size={size} color={color} /> }} />
+      <Tabs.Screen name="studio" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size + 6} color={color} /> }} />
+      <Tabs.Screen name="rooms" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles-outline" size={size} color={color} /> }} />
+      <Tabs.Screen name="wallet" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="wallet-outline" size={size} color={color} /> }} />
     </Tabs>
   );
 }
+
+export default function TabLayout() {
+  // ✅ extra-safe: tabs also get provider
+  return (
+    <VibeProvider>
+      <TabsInner />
+    </VibeProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  tab: {
+    position: "absolute",
+    left: 16,
+    right: 16,
+    bottom: 14,
+    height: 64,
+    borderRadius: 26,
+    borderWidth: 1,
+    overflow: "hidden",
+    backgroundColor: "transparent",
+  },
+});

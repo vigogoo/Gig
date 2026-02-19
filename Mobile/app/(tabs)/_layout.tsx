@@ -1,18 +1,30 @@
 import { Tabs } from "expo-router";
-import { BlurView } from "expo-blur";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
-import { VibeProvider, useVibe } from "@/context/VibeProvider";
+import { BlurView } from "expo-blur";
+import { useVibe } from "@/context/VibeProvider";
 
-function TabsInner() {
+export default function TabLayout() {
   const { theme } = useVibe();
 
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
+
+        // ✅ Icons only
         tabBarShowLabel: false,
-        tabBarStyle: [styles.tab, { borderColor: theme.border }],
+
+        tabBarActiveTintColor: theme.accent,
+        tabBarInactiveTintColor: theme.muted,
+
+        tabBarStyle: [
+          styles.tab,
+          {
+            borderColor: theme.border,
+          },
+        ],
+
         tabBarBackground: () => (
           <BlurView
             intensity={28}
@@ -20,25 +32,53 @@ function TabsInner() {
             style={[StyleSheet.absoluteFill, { backgroundColor: theme.surface2 }]}
           />
         ),
-        tabBarActiveTintColor: theme.accent,
-        tabBarInactiveTintColor: theme.muted,
       }}
     >
-      <Tabs.Screen name="pulse" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="pulse" size={size} color={color} /> }} />
-      <Tabs.Screen name="map" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="map-outline" size={size} color={color} /> }} />
-      <Tabs.Screen name="studio" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="add-circle" size={size + 6} color={color} /> }} />
-      <Tabs.Screen name="rooms" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="chatbubbles-outline" size={size} color={color} /> }} />
-      <Tabs.Screen name="wallet" options={{ tabBarIcon: ({ color, size }) => <Ionicons name="wallet-outline" size={size} color={color} /> }} />
-    </Tabs>
-  );
-}
+      <Tabs.Screen
+        name="pulse"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="pulse" size={size} color={color} />
+          ),
+        }}
+      />
 
-export default function TabLayout() {
-  // ✅ extra-safe: tabs also get provider
-  return (
-    <VibeProvider>
-      <TabsInner />
-    </VibeProvider>
+      <Tabs.Screen
+        name="map"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="map-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="studio"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="add-circle" size={size + 8} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="rooms"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="chatbubbles-outline" size={size} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="wallet"
+        options={{
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="wallet-outline" size={size} color={color} />
+          ),
+        }}
+      />
+    </Tabs>
   );
 }
 
